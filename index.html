@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeXusTech</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: #2a2a2a;
+    --border2: #333;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-faint: #444;
+    --accent: #c8c8c8;
+    --orange: #ff6b1a;
+    --orange2: #ff8c42;
+    --orange-glow: rgba(255,107,26,0.18);
+    --green: #39ff84;
+    --red: #ff3b3b;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRID BACKGROUND ─── */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none; z-index:0;
+  }
+
+  /* ─── TOPBAR ─── */
+  #topbar {
+    position: fixed; top:0; left:0; right:0; height:58px;
+    background: rgba(10,10,10,0.96);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  #topbar .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px; font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--text);
+    display: flex; align-items: center; gap:10px;
+  }
+
+  #topbar .logo span { color: var(--orange); }
+
+  .logo-icon {
+    width:32px; height:32px;
+    border: 2px solid var(--orange);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:var(--orange);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%);
+    background: rgba(255,107,26,0.06);
+  }
+
+  .topbar-right {
+    margin-left: auto;
+    display:flex; align-items:center; gap:14px;
+  }
+
+  .tag {
+    font-family:'Share Tech Mono', monospace;
+    font-size:10px; color:var(--text-dim);
+    letter-spacing:2px;
+    border:1px solid var(--border2);
+    padding:3px 10px;
+    text-transform:uppercase;
+  }
+
+  /* DEV BUTTON */
+  #devBtn {
+    font-family:'Orbitron',monospace;
+    font-size:10px; font-weight:600;
+    letter-spacing:1.5px;
+    background: transparent;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    padding: 7px 16px;
+    cursor:pointer;
+    text-transform:uppercase;
+    clip-path: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
+    transition: all 0.2s;
+    position:relative;
+  }
+  #devBtn:hover {
+    background: var(--orange-glow);
+    box-shadow: 0 0 18px var(--orange-glow);
+    color: var(--orange2);
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  #main {
+    margin-top: 58px;
+    padding: 40px 36px;
+    position:relative; z-index:1;
+    min-height: calc(100vh - 58px);
+  }
+
+  /* ─── HEADER ─── */
+  .platform-header {
+    margin-bottom: 40px;
+  }
+
+  .platform-header h1 {
+    font-family:'Orbitron',monospace;
+    font-size:clamp(26px,4vw,42px);
+    font-weight:800;
+    letter-spacing:4px;
+    line-height:1.1;
+    color: var(--text);
+  }
+  .platform-header h1 span { color: var(--orange); }
+
+  .platform-header p {
+    font-size:14px; color:var(--text-dim);
+    margin-top:8px; letter-spacing:1px;
+    font-family:'Share Tech Mono',monospace;
+  }
+
+  .h-line {
+    height:1px;
+    background: linear-gradient(90deg, var(--orange), transparent);
+    margin-top:18px; width:240px;
+  }
+
+  /* ─── APP GRID ─── */
+  #appGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+    margin-top: 10px;
+  }
+
+  .app-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 24px 16px 20px;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    cursor:pointer;
+    clip-path: polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px);
+    transition: all 0.25s;
+    text-decoration:none;
+    color: var(--text);
+    position:relative;
+    overflow:hidden;
+  }
+  .app-card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity:0; transition:opacity 0.3s;
+  }
+  .app-card:hover {
+    border-color: var(--orange);
+    box-shadow: 0 0 24px rgba(255,107,26,0.12);
+    transform: translateY(-2px);
+  }
+  .app-card:hover::before { opacity:1; }
+
+  .app-card .app-logo {
+    width:64px; height:64px;
+    background: var(--bg3);
+    border:1px solid var(--border2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px;
+    clip-path: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
+    transition:all 0.2s;
+  }
+  .app-card:hover .app-logo { border-color:var(--orange); background:rgba(255,107,26,0.06); }
+
+  .app-card .app-name {
+    font-size:13px; font-weight:600;
+    text-align:center; letter-spacing:1px;
+    color: var(--text);
+    word-break:break-word;
+  }
+
+  .app-card .app-badge {
+    font-family:'Share Tech Mono',monospace;
+    font-size:9px; color:var(--orange);
+    letter-spacing:2px;
+    border:1px solid rgba(255,107,26,0.3);
+    padding:2px 8px;
+    text-transform:uppercase;
+  }
+
+  /* ─── EMPTY STATE ─── */
+  #emptyState {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:320px; color:var(--text-faint);
+    border:1px dashed var(--border);
+    margin-top:10px;
+    gap:16px;
+    transition: all 0.3s;
+  }
+  #emptyState .icon { font-size:48px; opacity:0.3; }
+  #emptyState p { font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; }
+
+  /* ─── AUTH OVERLAY ─── */
+  #authOverlay {
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.85);
+    z-index:200;
+    align-items:center; justify-content:center;
+    backdrop-filter:blur(6px);
+  }
+  #authOverlay.show { display:flex; }
+
+  .auth-box {
+    background: var(--bg2);
+    border:1px solid var(--border2);
+    width:360px;
+    clip-path: polygon(16px 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%, 0% 16px);
+    padding:36px 32px 32px;
+    position:relative;
+    animation: fadeUp 0.25s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .auth-box h2 {
+    font-family:'Orbitron',monospace;
+    font-size:14px; font-weight:700;
+    letter-spacing:3px; color:var(--orange);
+    margin-bottom:4px;
+  }
+  .auth-box .sub {
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px; color:var(--text-dim);
+    letter-spacing:2px; margin-bottom:28px;
+  }
+
+  .auth-box label {
+    display:block; font-size:11px; font-weight:600;
+    letter-spacing:2px; color:var(--text-dim);
+    margin-bottom:6px; text-transform:uppercase;
+  }
+  .auth-box input {
+    width:100%; background:var(--bg3);
+    border:1px solid var(--border2);
+    color:var(--text); font-family:'Share Tech Mono',monospace;
+    font-size:13px; padding:10px 14px;
+    outline:none; margin-bottom:18px;
+    transition:border 0.2s;
+    clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
+  }
+  .auth-box input:focus { border-color:var(--orange); }
+
+  #authError {
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px; color:var(--red);
+    letter-spacing:1px; margin-bottom:14px;
+    display:none;
+  }
+
+  .auth-btns { display:flex; gap:10px; }
+
+  .btn-primary {
+    flex:1;
+    background: var(--orange);
+    border: none; color:#000;
+    font-family:'Orbitron',monospace;
+    font-size:11px; font-weight:700;
+    letter-spacing:2px; padding:10px;
+    cursor:pointer; text-transform:uppercase;
+    clip-path: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background:var(--orange2); box-shadow:0 0 16px var(--orange-glow); }
+
+  .btn-cancel {
+    background:transparent; border:1px solid var(--border2);
+    color:var(--text-dim); font-family:'Rajdhani',sans-serif;
+    font-size:13px; font-weight:600;
+    padding:10px 18px; cursor:pointer;
+    text-transform:uppercase; letter-spacing:1px;
+    transition:all 0.2s;
+  }
+  .btn-cancel:hover { border-color:var(--text-dim); color:var(--text); }
+
+  /* ─── DEV PANEL (NEXUSTECH SYSTEM) ─── */
+  #devPanel {
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.9);
+    z-index:300;
+    align-items:center; justify-content:center;
+    backdrop-filter:blur(8px);
+  }
+  #devPanel.show { display:flex; }
+
+  .dev-window {
+    background: var(--bg2);
+    border:1px solid var(--orange);
+    width:min(600px, 94vw);
+    clip-path: polygon(18px 0%, 100% 0%, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0% 100%, 0% 18px);
+    position:relative;
+    animation: fadeUp 0.28s ease;
+    box-shadow: 0 0 40px rgba(255,107,26,0.14);
+  }
+
+  .dev-titlebar {
+    background: var(--bg3);
+    border-bottom:1px solid var(--orange);
+    padding:12px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .dev-titlebar h3 {
+    font-family:'Orbitron',monospace;
+    font-size:12px; font-weight:700;
+    letter-spacing:3px; color:var(--orange);
+    text-transform:uppercase;
+  }
+  .dev-titlebar .close-btn {
+    background:none; border:1px solid var(--border2);
+    color:var(--text-dim); cursor:pointer;
+    width:26px; height:26px;
+    font-size:14px; display:flex; align-items:center; justify-content:center;
+    transition:all 0.2s;
+  }
+  .dev-titlebar .close-btn:hover { border-color:var(--red); color:var(--red); }
+
+  .dev-body {
+    padding:28px 24px 24px;
+  }
+
+  /* TOOLBAR */
+  .toolbar-section {
+    background: var(--bg3);
+    border:1px solid var(--orange);
+    padding:20px;
+    clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px);
+    margin-bottom:18px;
+    position:relative;
+    box-shadow: inset 0 0 20px rgba(255,107,26,0.04);
+  }
+
+  .toolbar-label {
+    font-family:'Share Tech Mono',monospace;
+    font-size:9px; font-weight:700;
+    letter-spacing:3px; color:var(--orange);
+    text-transform:uppercase;
+    margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .toolbar-label::after {
+    content:''; flex:1; height:1px;
+    background:linear-gradient(90deg, var(--orange), transparent);
+    opacity:0.4;
+  }
+
+  #appUrlInput {
+    width:100%;
+    background: rgba(0,0,0,0.4);
+    border:1px solid rgba(255,107,26,0.5);
+    color:var(--text);
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px; padding:12px 14px;
+    outline:none; margin-bottom:14px;
+    clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
+    transition:border 0.2s;
+  }
+  #appUrlInput::placeholder { color:rgba(255,107,26,0.35); }
+  #appUrlInput:focus { border-color:var(--orange); box-shadow:0 0 12px rgba(255,107,26,0.12); }
+
+  #appNameInput {
+    width:100%;
+    background: rgba(0,0,0,0.4);
+    border:1px solid rgba(255,107,26,0.5);
+    color:var(--text);
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px; padding:12px 14px;
+    outline:none; margin-bottom:14px;
+    clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
+    transition:border 0.2s;
+  }
+  #appNameInput::placeholder { color:rgba(255,107,26,0.35); }
+  #appNameInput:focus { border-color:var(--orange); box-shadow:0 0 12px rgba(255,107,26,0.12); }
+
+  #appEmojiInput {
+    width:100%;
+    background: rgba(0,0,0,0.4);
+    border:1px solid rgba(255,107,26,0.5);
+    color:var(--text);
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px; padding:12px 14px;
+    outline:none; margin-bottom:18px;
+    clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
+    transition:border 0.2s;
+  }
+  #appEmojiInput::placeholder { color:rgba(255,107,26,0.35); }
+  #appEmojiInput:focus { border-color:var(--orange); box-shadow:0 0 12px rgba(255,107,26,0.12); }
+
+  #deployBtn {
+    width:100%;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+    border:none; color:#000;
+    font-family:'Orbitron',monospace;
+    font-size:12px; font-weight:800;
+    letter-spacing:3px; padding:13px;
+    cursor:pointer; text-transform:uppercase;
+    clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px);
+    transition:all 0.2s; position:relative; overflow:hidden;
+  }
+  #deployBtn:hover {
+    box-shadow:0 0 28px rgba(255,107,26,0.4);
+    transform:translateY(-1px);
+  }
+  #deployBtn:active { transform:translateY(1px); }
+
+  /* DEPLOY STATUS */
+  #deployStatus {
+    display:none;
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px; letter-spacing:2px;
+    padding:12px 14px;
+    margin-top:14px;
+    border-left:3px solid var(--green);
+    background:rgba(57,255,132,0.05);
+    color:var(--green);
+  }
+  #deployStatus.error {
+    border-color:var(--red);
+    background:rgba(255,59,59,0.05);
+    color:var(--red);
+  }
+
+  /* INSTALLED APPS LIST */
+  .installed-list {
+    margin-top:18px;
+  }
+  .installed-list .section-title {
+    font-family:'Share Tech Mono',monospace;
+    font-size:9px; color:var(--text-dim);
+    letter-spacing:3px; text-transform:uppercase;
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .installed-list .section-title::after {
+    content:''; flex:1; height:1px; background:var(--border2);
+  }
+
+  .installed-item {
+    display:flex; align-items:center; gap:12px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    background:var(--bg3);
+    margin-bottom:8px;
+    clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px);
+    transition:all 0.2s;
+  }
+  .installed-item:hover { border-color:var(--border2); }
+
+  .installed-item .i-emoji { font-size:20px; }
+  .installed-item .i-info { flex:1; }
+  .installed-item .i-name {
+    font-size:13px; font-weight:600; color:var(--text);
+    letter-spacing:1px;
+  }
+  .installed-item .i-url {
+    font-family:'Share Tech Mono',monospace;
+    font-size:9px; color:var(--text-dim);
+    white-space:nowrap; overflow:hidden;
+    text-overflow:ellipsis; max-width:280px;
+  }
+  .installed-item .del-btn {
+    background:none; border:1px solid var(--border);
+    color:var(--text-faint); cursor:pointer;
+    font-size:12px; padding:4px 8px;
+    transition:all 0.2s; font-family:'Share Tech Mono',monospace;
+  }
+  .installed-item .del-btn:hover { border-color:var(--red); color:var(--red); }
+
+  /* ─── DEPLOY ANIMATION ─── */
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+  .deploying { animation:pulse 0.8s ease infinite; }
+
+  /* ─── SCAN LINE ─── */
+  body::after {
+    content:'';
+    position:fixed; top:0; left:0; right:0;
+    height:2px;
+    background:linear-gradient(90deg,transparent,var(--orange),transparent);
+    animation:scan 6s linear infinite;
+    opacity:0.2; pointer-events:none; z-index:999;
+  }
+  @keyframes scan {
+    0%  { top:-2px; }
+    100%{ top:100vh; }
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border2); }
+  ::-webkit-scrollbar-thumb:hover { background:var(--orange); }
+
+  /* ─── CORNER DECO ─── */
+  .corner-deco {
+    position:absolute;
+    width:10px; height:10px;
+    border-color:var(--orange);
+    border-style:solid;
+    opacity:0.5;
+  }
+  .corner-deco.tl { top:8px; left:8px; border-width:2px 0 0 2px; }
+  .corner-deco.br { bottom:8px; right:8px; border-width:0 2px 2px 0; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding:24px 36px;
+    border-top:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px; color:var(--text-faint);
+    letter-spacing:2px;
+    position:relative; z-index:1;
+  }
+  footer span { color:var(--orange); }
+
+  /* ─── APP COUNT BADGE ─── */
+  #appCount {
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px; color:var(--text-dim);
+    letter-spacing:2px;
+    margin-bottom:24px;
+    display:flex; align-items:center; gap:8px;
+  }
+  #appCount::before { content:''; display:inline-block; width:6px; height:6px; background:var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">
+    <div class="logo-icon">N</div>
+    <span>NE<span>X</span>US</span>TECH
+  </div>
+  <div class="topbar-right">
+    <div class="tag">AI APP PLATFORM</div>
+    <button id="devBtn" onclick="openAuth()">⬡ NeXusTech System</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="platform-header">
+    <h1>NeXus<span>Tech</span></h1>
+    <p>&gt; AI-POWERED APPLICATION PLATFORM</p>
+    <div class="h-line"></div>
+  </div>
+
+  <div id="appCount">0 APPS DEPLOYED</div>
+
+  <div id="emptyState">
+    <div class="icon">⬡</div>
+    <p>NO APPS DEPLOYED YET</p>
+    <p style="font-size:10px;opacity:0.5">USE NEXUSTECH SYSTEM TO DEPLOY YOUR FIRST APP</p>
+  </div>
+
+  <div id="appGrid" style="display:none"></div>
+</div>
+
+<footer>
+  <div>NEXUSTECH <span>v1.0.0</span></div>
+  <div>POWERED BY <span>GOOGLE STUDIO AI</span></div>
+</footer>
+
+<!-- AUTH OVERLAY -->
+<div id="authOverlay">
+  <div class="auth-box">
+    <div class="corner-deco tl"></div>
+    <div class="corner-deco br"></div>
+    <h2>NEXUSTECH SYSTEM</h2>
+    <div class="sub">&gt; DEVELOPER ACCESS REQUIRED</div>
+    <label>User</label>
+    <input type="text" id="authUser" placeholder="Enter username" autocomplete="off"/>
+    <label>Passkey</label>
+    <input type="password" id="authPass" placeholder="Enter passkey" autocomplete="off"/>
+    <div id="authError">⚠ INVALID CREDENTIALS — ACCESS DENIED</div>
+    <div class="auth-btns">
+      <button class="btn-primary" onclick="submitAuth()">AUTHENTICATE</button>
+      <button class="btn-cancel" onclick="closeAuth()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEV PANEL -->
+<div id="devPanel">
+  <div class="dev-window">
+    <div class="dev-titlebar">
+      <h3>⬡ NeXusTech System — Developer Toolbar</h3>
+      <button class="close-btn" onclick="closeDevPanel()">✕</button>
+    </div>
+    <div class="dev-body">
+
+      <div class="toolbar-section">
+        <div class="toolbar-label">Deploy New Application</div>
+        <input type="text" id="appNameInput" placeholder="App Name (e.g. My AI Assistant)"/>
+        <input type="text" id="appEmojiInput" placeholder="App Icon — paste any emoji (e.g. 🤖 🚀 ⚡)"/>
+        <input type="text" id="appUrlInput" placeholder="Paste Google Studio AI app link here..."/>
+        <button id="deployBtn" onclick="deployApp()">▶ DEPLOY APP</button>
+        <div id="deployStatus"></div>
+      </div>
+
+      <div class="installed-list">
+        <div class="section-title">Installed Applications</div>
+        <div id="installedList">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-faint);padding:10px 0;letter-spacing:2px;">
+            NO APPS INSTALLED
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── STATE ───────────────────────────────────────────────
+  const CREDS = { user: 'Ovitech', pass: 'NeXusTech@1' };
+  let apps = JSON.parse(localStorage.getItem('nexustech_apps') || '[]');
+
+  // ─── AUTH ────────────────────────────────────────────────
+  function openAuth() {
+    document.getElementById('authOverlay').classList.add('show');
+    document.getElementById('authUser').value = '';
+    document.getElementById('authPass').value = '';
+    document.getElementById('authError').style.display = 'none';
+    setTimeout(() => document.getElementById('authUser').focus(), 100);
+  }
+
+  function closeAuth() {
+    document.getElementById('authOverlay').classList.remove('show');
+  }
+
+  function submitAuth() {
+    const u = document.getElementById('authUser').value.trim();
+    const p = document.getElementById('authPass').value.trim();
+    if (u === CREDS.user && p === CREDS.pass) {
+      closeAuth();
+      openDevPanel();
+    } else {
+      const err = document.getElementById('authError');
+      err.style.display = 'block';
+      document.getElementById('authPass').value = '';
+      document.getElementById('authPass').focus();
+      err.style.animation = 'none';
+      void err.offsetWidth;
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('authOverlay').classList.contains('show')) submitAuth();
+    }
+    if (e.key === 'Escape') {
+      closeAuth();
+      closeDevPanel();
+    }
+  });
+
+  // ─── DEV PANEL ────────────────────────────────────────────
+  function openDevPanel() {
+    document.getElementById('devPanel').classList.add('show');
+    renderInstalledList();
+    document.getElementById('appUrlInput').value = '';
+    document.getElementById('appNameInput').value = '';
+    document.getElementById('appEmojiInput').value = '';
+    document.getElementById('deployStatus').style.display = 'none';
+  }
+
+  function closeDevPanel() {
+    document.getElementById('devPanel').classList.remove('show');
+  }
+
+  // ─── DEPLOY ──────────────────────────────────────────────
+  function deployApp() {
+    const url = document.getElementById('appUrlInput').value.trim();
+    const name = document.getElementById('appNameInput').value.trim();
+    const emoji = document.getElementById('appEmojiInput').value.trim() || '⬡';
+    const status = document.getElementById('deployStatus');
+    const btn = document.getElementById('deployBtn');
+
+    if (!url) {
+      showStatus('⚠ NO URL PROVIDED — PASTE A VALID LINK', true);
+      return;
+    }
+    if (!name) {
+      showStatus('⚠ APP NAME IS REQUIRED', true);
+      return;
+    }
+    if (!url.startsWith('http')) {
+      showStatus('⚠ INVALID URL FORMAT — MUST START WITH HTTP/HTTPS', true);
+      return;
+    }
+
+    // Deploy animation
+    btn.textContent = '⬡ DEPLOYING...';
+    btn.classList.add('deploying');
+    btn.disabled = true;
+
+    setTimeout(() => {
+      const app = {
+        id: Date.now(),
+        name,
+        emoji,
+        url
+      };
+      apps.push(app);
+      save();
+
+      btn.textContent = '▶ DEPLOY APP';
+      btn.classList.remove('deploying');
+      btn.disabled = false;
+
+      showStatus(`✓ "${name}" DEPLOYED SUCCESSFULLY`, false);
+      document.getElementById('appUrlInput').value = '';
+      document.getElementById('appNameInput').value = '';
+      document.getElementById('appEmojiInput').value = '';
+
+      renderInstalledList();
+      renderGrid();
+    }, 1800);
+  }
+
+  function showStatus(msg, isError) {
+    const s = document.getElementById('deployStatus');
+    s.textContent = msg;
+    s.style.display = 'block';
+    s.className = isError ? 'error' : '';
+  }
+
+  // ─── REMOVE ──────────────────────────────────────────────
+  function removeApp(id) {
+    apps = apps.filter(a => a.id !== id);
+    save();
+    renderInstalledList();
+    renderGrid();
+  }
+
+  // ─── SAVE ────────────────────────────────────────────────
+  function save() {
+    localStorage.setItem('nexustech_apps', JSON.stringify(apps));
+  }
+
+  // ─── RENDER GRID ─────────────────────────────────────────
+  function renderGrid() {
+    const grid = document.getElementById('appGrid');
+    const empty = document.getElementById('emptyState');
+    const count = document.getElementById('appCount');
+
+    count.textContent = `${apps.length} APP${apps.length !== 1 ? 'S' : ''} DEPLOYED`;
+    count.style.display = apps.length > 0 ? 'flex' : 'flex';
+
+    if (apps.length === 0) {
+      empty.style.display = 'flex';
+      grid.style.display = 'none';
+      return;
+    }
+
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+    grid.innerHTML = '';
+
+    apps.forEach(app => {
+      const card = document.createElement('a');
+      card.href = app.url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      card.className = 'app-card';
+      card.innerHTML = `
+        <div class="app-logo">${app.emoji}</div>
+        <div class="app-name">${escHtml(app.name)}</div>
+        <div class="app-badge">LIVE</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // ─── RENDER INSTALLED LIST ────────────────────────────────
+  function renderInstalledList() {
+    const list = document.getElementById('installedList');
+    if (apps.length === 0) {
+      list.innerHTML = `<div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-faint);padding:10px 0;letter-spacing:2px;">NO APPS INSTALLED</div>`;
+      return;
+    }
+    list.innerHTML = apps.map(app => `
+      <div class="installed-item">
+        <div class="i-emoji">${app.emoji}</div>
+        <div class="i-info">
+          <div class="i-name">${escHtml(app.name)}</div>
+          <div class="i-url">${escHtml(app.url)}</div>
+        </div>
+        <button class="del-btn" onclick="removeApp(${app.id})">✕ REMOVE</button>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ─── CLOSE ON OUTSIDE CLICK ──────────────────────────────
+  document.getElementById('authOverlay').addEventListener('click', function(e){
+    if (e.target === this) closeAuth();
+  });
+  document.getElementById('devPanel').addEventListener('click', function(e){
+    if (e.target === this) closeDevPanel();
+  });
+
+  // ─── INIT ────────────────────────────────────────────────
+  renderGrid();
+
+  // Pre-install the provided app as a demo
+  if (apps.length === 0) {
+    apps.push({
+      id: Date.now(),
+      name: 'AI Studio App',
+      emoji: '🤖',
+      url: 'https://ais-pre-s2czy4rmptu2n7yeupooid-726435541570.europe-west2.run.app'
+    });
+    save();
+    renderGrid();
+  }
+</script>
+</body>
+</html>
